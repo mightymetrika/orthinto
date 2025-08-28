@@ -1,0 +1,58 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# orthinto
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of orthinto is to explore integrals of orthogonal functions.
+
+## Installation
+
+You can install the development version of orthinto from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("pak")
+pak::pak("mightymetrika/orthinto")
+```
+
+## Orthogonal Example
+
+```{r orthogonal}
+library(orthinto)
+
+oio <- orthinto(phi = function(x) cos(x),
+                psi = function(x) sin(x),
+                dl = seq(-pi, 0, pi/10),
+                du = seq(pi, 0, -pi/10))
+
+summary(oio)
+plot(oio)
+```
+
+
+## Non-orthogonal Example
+
+```{r not-orthogonal}
+
+noio <- orthinto(phi = function(x) cos(x),
+                psi = function(x) sin(x),
+                dl = seq(-pi, 0, pi/10),
+                du = seq(pi, 0, -pi/2))
+
+summary(noio)
+plot(noio)
+```

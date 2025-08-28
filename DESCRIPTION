@@ -1,9 +1,16 @@
 Package: orthinto
-Title: What the Package Does (One Line, Title Case)
+Title: Numerical Integration for Exploring Orthogonality of Functions
 Version: 0.0.0.9000
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Authors@R: c(
+    person("Mackson", "Ncube", , "macksonncube.stats@gmail.com", role = c("aut", "cre")),
+    person("mightymetrika, LLC", role = c("cph", "fnd"))
+  )
+Description: Provides tools for numerically exploring the orthogonality of functions 
+    by computing integrals of their products over specified intervals. Orthogonal 
+    functions are fundamental in mathematical analysis, particularly in Fourier 
+    analysis and function approximation. The package includes visualization and 
+    summary methods for analyzing integration results. Based on the mathematical 
+    definitions from "Fourier Series" by Georgi P. Tolstov.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
