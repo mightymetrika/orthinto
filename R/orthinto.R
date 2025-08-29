@@ -237,7 +237,7 @@ summary.oio <- function(object, ...) {
 #'   when show_bounds=TRUE to avoid overcrowding (default: 10)
 #' @param legend_pos Character; position for legend. One of "topright", "topleft",
 #'   "bottomright", "bottomleft", "top", "bottom", "left", "right", or "none" to
-#'   suppress legend. Default is "topright".
+#'   suppress legend. Default is "bottomright".
 #' @param ... Additional arguments passed to underlying plot functions
 #'
 #' @details
@@ -268,7 +268,7 @@ summary.oio <- function(object, ...) {
 #'
 #' @export
 plot.oio <- function(x, type = "intervals", show_bounds = FALSE, max_labels = 10,
-                     legend_pos = "topright", ...) {
+                     legend_pos = "bottomright", ...) {
 
   type <- match.arg(type, c("intervals", "bounds"))
 

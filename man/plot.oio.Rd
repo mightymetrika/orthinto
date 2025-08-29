@@ -9,7 +9,7 @@
   type = "intervals",
   show_bounds = FALSE,
   max_labels = 10,
-  legend_pos = "topright",
+  legend_pos = "bottomright",
   ...
 )
 }
@@ -30,7 +30,7 @@ when show_bounds=TRUE to avoid overcrowding (default: 10)}
 
 \item{legend_pos}{Character; position for legend. One of "topright", "topleft",
 "bottomright", "bottomleft", "top", "bottom", "left", "right", or "none" to
-suppress legend. Default is "topright".}
+suppress legend. Default is "bottomright".}
 
 \item{...}{Additional arguments passed to underlying plot functions}
 }

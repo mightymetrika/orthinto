@@ -58,3 +58,18 @@ summary(noio)
 plot(noio)
 plot(noio, type = "bounds")
 ```
+
+
+## Mixed Example
+
+```{r}
+moio <- orthinto(phi = function(x) x,
+                 psi = function(x) x^3 - (3*(pi^2)/5)*x,
+                 dl = seq(-4*pi, 0, by = pi) ,
+                 du = seq( 4*pi, 0, by = -pi))
+
+summary(moio)
+plot(moio)
+plot(moio, type = "bounds")
+```
+

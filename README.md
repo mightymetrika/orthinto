@@ -99,3 +99,42 @@ plot(noio, type = "bounds")
 ```
 
 <img src="man/figures/README-unnamed-chunk-3-2.png" width="100%" />
+
+## Mixed Example
+
+``` r
+moio <- orthinto(phi = function(x) x,
+                 psi = function(x) x^3 - (3*(pi^2)/5)*x,
+                 dl = seq(-4*pi, 0, by = pi) ,
+                 du = seq( 4*pi, 0, by = -pi))
+
+summary(moio)
+#> Orthogonal Integration Summary
+#> =============================
+#> Functions: function(x) x × function(x) x^3 - (3 * (pi^2)/5) * x 
+#> Number of intervals: 5 
+#> 
+#> Integration Values:
+#>   Min: 0.000000 
+#>   Max: 117511.558958 
+#>   Mean: 29377.889739 
+#>   Sum: 146889.448697 
+#> 
+#> Absolute Errors:
+#>   Min: 0.00e+00 
+#>   Max: 1.31e-09 
+#>   Mean: 3.27e-10 
+#> 
+#> Orthogonality Assessment:
+#>   Total integral: 146889.448697 
+#>   Assessment: Functions do not appear to be orthogonal
+plot(moio)
+```
+
+<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
+
+``` r
+plot(moio, type = "bounds")
+```
+
+<img src="man/figures/README-unnamed-chunk-4-2.png" width="100%" />
