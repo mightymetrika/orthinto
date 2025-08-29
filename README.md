@@ -95,7 +95,7 @@ plot(noio)
 <img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
 
 ``` r
-plot(oio, type = "bounds")
+plot(noio, type = "bounds")
 ```
 
 <img src="man/figures/README-unnamed-chunk-3-2.png" width="100%" />

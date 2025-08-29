@@ -56,5 +56,5 @@ noio <- orthinto(phi = function(x) cos(x),
 
 summary(noio)
 plot(noio)
-plot(oio, type = "bounds")
+plot(noio, type = "bounds")
 ```

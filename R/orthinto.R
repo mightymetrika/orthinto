@@ -4,7 +4,7 @@
 #' over specified intervals with the goal of exploring orthogonal functions. Two
 #' functions are orthogonal over an interval if the integral of their product equals
 #' zero over that interval. This is based on the definition from Chapter 1, Section 5
-#' of "Fourier Series" by Georgi P. Tolstov.
+#' of Fourier Series by Georgi P. Tolstov.
 #'
 #' @param phi A function of one variable (default: cosine function)
 #' @param psi A function of one variable (default: sine function)
