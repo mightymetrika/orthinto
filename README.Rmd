@@ -31,7 +31,7 @@ pak::pak("mightymetrika/orthinto")
 
 ## Orthogonal Example
 
-```{r orthogonal}
+```{r}
 library(orthinto)
 
 oio <- orthinto(phi = function(x) cos(x),
@@ -41,12 +41,13 @@ oio <- orthinto(phi = function(x) cos(x),
 
 summary(oio)
 plot(oio)
+plot(oio, type = "bounds")
 ```
 
 
 ## Non-orthogonal Example
 
-```{r not-orthogonal}
+```{r}
 
 noio <- orthinto(phi = function(x) cos(x),
                 psi = function(x) sin(x),
@@ -55,4 +56,5 @@ noio <- orthinto(phi = function(x) cos(x),
 
 summary(noio)
 plot(noio)
+plot(oio, type = "bounds")
 ```

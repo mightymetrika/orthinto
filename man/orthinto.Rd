@@ -61,15 +61,6 @@ result2 <- orthinto(
 )
 summary(result2)
 
-# Multiple intervals
-result3 <- orthinto(
-  phi = function(x) cos(2*x),
-  psi = function(x) sin(3*x),
-  dl = c(-pi, 0),
-  du = c(0, pi)
-)
-plot(result3)
-
 }
 \references{
 Tolstov, G. P. (1962). Fourier Series. Translated by R. A. Silverman. Dover Publications, Inc., New York

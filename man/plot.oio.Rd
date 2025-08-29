@@ -4,15 +4,64 @@
 \alias{plot.oio}
 \title{Plot Method for oio Objects}
 \usage{
-\method{plot}{oio}(x, type = "intervals", ...)
+\method{plot}{oio}(
+  x,
+  type = "intervals",
+  show_bounds = FALSE,
+  max_labels = 10,
+  legend_pos = "topright",
+  ...
+)
 }
 \arguments{
 \item{x}{An object of class "oio"}
 
-\item{type}{Character string specifying plot type: "intervals" (default), "values", or "errors"}
+\item{type}{Character string specifying plot type:
+\describe{
+\item{"intervals"}{(default) Bar plot of integral values by interval number}
+\item{"bounds"}{Horizontal segment plot showing actual interval ranges}
+}}
 
-\item{...}{Additional arguments passed to plot functions}
+\item{show_bounds}{Logical; if TRUE, show actual interval bounds as x-axis labels
+for "intervals" type. Default is FALSE.}
+
+\item{max_labels}{Integer; maximum number of interval labels to show on x-axis
+when show_bounds=TRUE to avoid overcrowding (default: 10)}
+
+\item{legend_pos}{Character; position for legend. One of "topright", "topleft",
+"bottomright", "bottomleft", "top", "bottom", "left", "right", or "none" to
+suppress legend. Default is "topright".}
+
+\item{...}{Additional arguments passed to underlying plot functions}
 }
 \description{
-Plot Method for oio Objects
+Provides visualization options for orthogonal integration results with enhanced
+interval visualization to better understand the integration bounds.
+}
+\details{
+The "bounds" plot type shows each interval as a horizontal line segment, with
+colors indicating the integration result:
+\itemize{
+\item Blue: ≈ 0 (suggesting orthogonality)
+\item Green: > 0 (positive integral)
+\item Orange: < 0 (negative integral)
+\item Red: Failed integration
+}
+}
+\examples{
+# Create test data
+result <- orthinto(dl = c(-1, 0, 1), du = c(0, 1, 2))
+
+# Standard interval plot
+plot(result, type = "intervals")
+
+# Show actual bounds on x-axis
+plot(result, type = "intervals", show_bounds = TRUE)
+
+# Bounds visualization
+plot(result, type = "bounds")
+
+# Adjust legend position
+plot(result, type = "bounds", legend_pos = "bottomright")
+
 }

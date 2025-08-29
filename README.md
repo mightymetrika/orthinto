@@ -52,7 +52,13 @@ summary(oio)
 plot(oio)
 ```
 
-<img src="man/figures/README-orthogonal-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-2-1.png" width="100%" />
+
+``` r
+plot(oio, type = "bounds")
+```
+
+<img src="man/figures/README-unnamed-chunk-2-2.png" width="100%" />
 
 ## Non-orthogonal Example
 
@@ -86,4 +92,10 @@ summary(noio)
 plot(noio)
 ```
 
-<img src="man/figures/README-not-orthogonal-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
+
+``` r
+plot(oio, type = "bounds")
+```
+
+<img src="man/figures/README-unnamed-chunk-3-2.png" width="100%" />

@@ -42,15 +42,6 @@
 #' )
 #' summary(result2)
 #'
-#' # Multiple intervals
-#' result3 <- orthinto(
-#'   phi = function(x) cos(2*x),
-#'   psi = function(x) sin(3*x),
-#'   dl = c(-pi, 0),
-#'   du = c(0, pi)
-#' )
-#' plot(result3)
-#'
 #' @references
 #' Tolstov, G. P. (1962). Fourier Series. Translated by R. A. Silverman. Dover Publications, Inc., New York
 #'
@@ -228,83 +219,170 @@ summary.oio <- function(object, ...) {
   invisible(object)
 }
 
+
 #' Plot Method for oio Objects
 #'
+#' Provides visualization options for orthogonal integration results with enhanced
+#' interval visualization to better understand the integration bounds.
+#'
 #' @param x An object of class "oio"
-#' @param type Character string specifying plot type: "intervals" (default), "values", or "errors"
-#' @param ... Additional arguments passed to plot functions
+#' @param type Character string specifying plot type:
+#' \describe{
+#'   \item{"intervals"}{(default) Bar plot of integral values by interval number}
+#'   \item{"bounds"}{Horizontal segment plot showing actual interval ranges}
+#' }
+#' @param show_bounds Logical; if TRUE, show actual interval bounds as x-axis labels
+#'   for "intervals" type. Default is FALSE.
+#' @param max_labels Integer; maximum number of interval labels to show on x-axis
+#'   when show_bounds=TRUE to avoid overcrowding (default: 10)
+#' @param legend_pos Character; position for legend. One of "topright", "topleft",
+#'   "bottomright", "bottomleft", "top", "bottom", "left", "right", or "none" to
+#'   suppress legend. Default is "topright".
+#' @param ... Additional arguments passed to underlying plot functions
+#'
+#' @details
+#' The "bounds" plot type shows each interval as a horizontal line segment, with
+#' colors indicating the integration result:
+#' \itemize{
+#'   \item Blue: ≈ 0 (suggesting orthogonality)
+#'   \item Green: > 0 (positive integral)
+#'   \item Orange: < 0 (negative integral)
+#'   \item Red: Failed integration
+#' }
+#'
+#' @examples
+#' # Create test data
+#' result <- orthinto(dl = c(-1, 0, 1), du = c(0, 1, 2))
+#'
+#' # Standard interval plot
+#' plot(result, type = "intervals")
+#'
+#' # Show actual bounds on x-axis
+#' plot(result, type = "intervals", show_bounds = TRUE)
+#'
+#' # Bounds visualization
+#' plot(result, type = "bounds")
+#'
+#' # Adjust legend position
+#' plot(result, type = "bounds", legend_pos = "bottomright")
+#'
 #' @export
-plot.oio <- function(x, type = "intervals", ...) {
+plot.oio <- function(x, type = "intervals", show_bounds = FALSE, max_labels = 10,
+                     legend_pos = "topright", ...) {
 
-  type <- match.arg(type, c("intervals", "values", "errors"))
+  type <- match.arg(type, c("intervals", "bounds"))
 
   values <- sapply(x$oio, function(int) int$value)
-  errors <- sapply(x$oio, function(int) int$abs.error)
+
+  # Create color coding based on integration values
+  valid_values <- values[!is.na(values)]
+  if (length(valid_values) > 0) {
+    colors <- ifelse(is.na(values), "red",
+                     ifelse(abs(values) < 1e-6, "blue",
+                            ifelse(values > 0, "green", "orange")))
+  } else {
+    colors <- rep("red", length(values))
+  }
 
   if (type == "intervals") {
     # Plot integration intervals and their values
     n_intervals <- length(x$oio)
 
-    # Create color coding based on integration values
-    valid_values <- values[!is.na(values)]
-    if (length(valid_values) > 0) {
-      colors <- ifelse(is.na(values), "red",
-                       ifelse(abs(values) < 1e-6, "blue",
-                              ifelse(values > 0, "green", "orange")))
-    } else {
-      colors <- rep("red", n_intervals)
-    }
-
-    plot(1:n_intervals, values,
-         type = "h",
-         col = colors,
-         main = paste("Integration Results:", x$phi_name, "×", x$psi_name),
-         xlab = "Interval Number",
-         ylab = "Integral Value",
-         ...)
+    # Create the plot
+    graphics::plot(1:n_intervals, values,
+                   type = "h",
+                   col = colors,
+                   main = paste("Integration Results:", x$phi_name, "×", x$psi_name),
+                   xlab = if(show_bounds) "Integration Intervals" else "Interval Number",
+                   ylab = "Integral Value",
+                   xaxt = if(show_bounds) "n" else "s",
+                   ...)
 
     graphics::abline(h = 0, lty = 2, col = "gray")
 
-    # Add legend
-    graphics::legend("topright",
-           legend = c("~ 0 (orthogonal)", "> 0", "< 0", "Failed"),
-           col = c("blue", "green", "orange", "red"),
-           lty = 1,
-           cex = 0.8)
-
-  } else if (type == "values") {
-    # Histogram of integration values
-    valid_values <- values[!is.na(values)]
-    if (length(valid_values) > 0) {
-      graphics::hist(valid_values,
-           main = paste("Distribution of Integration Values"),
-           xlab = "Integral Value",
-           col = "lightblue",
-           border = "darkblue",
-           ...)
-      graphics::abline(v = 0, lty = 2, col = "red", lwd = 2)
-    } else {
-      plot(1, 1, type = "n",
-           main = "No valid integration values to plot",
-           xlab = "", ylab = "")
+    # Add custom x-axis labels showing interval bounds
+    if (show_bounds && n_intervals <= max_labels) {
+      interval_labels <- sprintf("[%.2f,%.2f]", x$dl, x$du)
+      graphics::axis(1, at = 1:n_intervals, labels = interval_labels,
+                     las = 2, cex.axis = 0.8)
+    } else if (show_bounds && n_intervals > max_labels) {
+      label_indices <- round(seq(1, n_intervals, length.out = max_labels))
+      interval_labels <- sprintf("[%.2f,%.2f]", x$dl[label_indices], x$du[label_indices])
+      graphics::axis(1, at = label_indices, labels = interval_labels,
+                     las = 2, cex.axis = 0.8)
     }
 
-  } else if (type == "errors") {
-    # Plot absolute errors
-    valid_indices <- which(!is.na(errors))
-    if (length(valid_indices) > 0) {
-      plot(valid_indices, errors[valid_indices],
-           type = "b",
-           main = "Integration Absolute Errors",
-           xlab = "Interval Number",
-           ylab = "Absolute Error",
-           log = "y",
-           col = "red",
-           ...)
-    } else {
-      plot(1, 1, type = "n",
-           main = "No error information available",
-           xlab = "", ylab = "")
+    # Add legend if requested
+    if (legend_pos != "none") {
+      graphics::legend(legend_pos,
+                       legend = c("~ 0 (orthogonal)", "> 0", "< 0", "Failed"),
+                       col = c("blue", "green", "orange", "red"),
+                       lty = 1,
+                       cex = 0.8,
+                       bg = "white")
+    }
+
+  } else if (type == "bounds") {
+    # Visualize the actual intervals as horizontal segments
+    n_intervals <- length(x$oio)
+
+    # Set up plot limits with some padding
+    all_bounds <- c(x$dl, x$du)
+    x_range <- range(all_bounds)
+    x_padding <- diff(x_range) * 0.05
+    xlim <- c(x_range[1] - x_padding, x_range[2] + x_padding)
+
+    # Create empty plot with cleaner y-axis
+    graphics::plot(xlim, c(0.5, n_intervals + 0.5), type = "n",
+                   main = paste("Integration Intervals:", x$phi_name, "×", x$psi_name),
+                   xlab = "x",
+                   ylab = "",
+                   ylim = c(n_intervals + 0.5, 0.5),  # Reverse so interval 1 is at top
+                   yaxt = "n",  # Suppress default y-axis
+                   ...)
+
+    # Add clean y-axis labels
+    graphics::axis(2, at = 1:n_intervals, labels = paste("Interval", 1:n_intervals),
+                   las = 1, cex.axis = 0.8)
+
+    # Draw each interval as a horizontal line segment
+    for (i in 1:n_intervals) {
+      graphics::segments(x$dl[i], i, x$du[i], i, col = colors[i], lwd = 3)
+
+      # Add interval bounds as text labels (only if not too many intervals)
+      if (n_intervals <= 15) {
+        # Left bound
+        graphics::text(x$dl[i], i + 0.3, sprintf("%.2f", x$dl[i]),
+                       cex = 0.7, adj = c(0.5, 0), col = "darkgray")
+        # Right bound
+        graphics::text(x$du[i], i + 0.3, sprintf("%.2f", x$du[i]),
+                       cex = 0.7, adj = c(0.5, 0), col = "darkgray")
+      }
+
+      # Add integral value as text (only if not too many intervals)
+      if (n_intervals <= 12) {
+        mid_point <- (x$dl[i] + x$du[i]) / 2
+        if (!is.na(values[i])) {
+          graphics::text(mid_point, i - 0.35, sprintf("%.3f", values[i]),
+                         cex = 0.8, adj = c(0.5, 1), col = colors[i], font = 2)
+        } else {
+          graphics::text(mid_point, i - 0.35, "FAIL",
+                         cex = 0.8, adj = c(0.5, 1), col = "red", font = 2)
+        }
+      }
+    }
+
+    # Add vertical line at x = 0 for reference
+    graphics::abline(v = 0, lty = 2, col = "gray50")
+
+    # Add legend if requested
+    if (legend_pos != "none") {
+      graphics::legend(legend_pos,
+                       legend = c("~ 0 (orthogonal)", "> 0", "< 0", "Failed"),
+                       col = c("blue", "green", "orange", "red"),
+                       lty = 1, lwd = 3,
+                       cex = 0.8,
+                       bg = "white")
     }
   }
 }
